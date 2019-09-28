@@ -5,6 +5,8 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core';
 
+import { PIPELINES_NAMES } from '../../../../lib/constants';
+
 const useStyles = makeStyles((theme) => ({
   formControl: {
     width: '88%',
@@ -18,9 +20,10 @@ const useStyles = makeStyles((theme) => ({
  * @returns {*}
  * @constructor
  */
-const SelectPipeline = ({ onFilter }) => {
+const SelectPipeline = ({ onFilter, pipe }) => {
   const classes = useStyles();
-  const [values, setValues] = React.useState(' ');
+  const [values, setValues] = React.useState(pipe);
+  if (values !== pipe) setValues(pipe);
   /**
    * Функция для выставления текущего выбранного значения
    * @param event
@@ -35,8 +38,8 @@ const SelectPipeline = ({ onFilter }) => {
         value={values}
         onChange={handleChange}
       >
-        <MenuItem value={1}>Трубопровод</MenuItem>
-        <MenuItem value=""> </MenuItem>
+        <MenuItem value={1}>{PIPELINES_NAMES[1]}</MenuItem>
+        <MenuItem value={2}>{PIPELINES_NAMES[2]}</MenuItem>
       </Select>
     </FormControl>
   );
@@ -44,6 +47,7 @@ const SelectPipeline = ({ onFilter }) => {
 
 SelectPipeline.propTypes = {
   onFilter: PropTypes.func.isRequired,
+  pipe: PropTypes.number.isRequired,
 };
 
 export default SelectPipeline;

@@ -3,6 +3,15 @@ import PropTypes from 'prop-types';
 
 import './styles.css';
 
+const TooltipPayload = (props) => props.payloads.map((payload) => {
+  return (
+    <p className="label">
+      <span className="ball" style={{ background: payload.stroke }}/>
+      {`${payload.name} : ${payload.value}`}
+    </p>
+  );
+});
+
 /**
  * Кастомный тултип
  * @param active проверка что тултип активный
@@ -12,22 +21,15 @@ import './styles.css';
  * @constructor
  */
 const CustomTooltip = ({ active, payload }) => {
+  let tooltipText = null;
+  if (payload) {
+    tooltipText = <TooltipPayload payloads={payload}/>;
+  }
   if (active) {
     return (
       <div className="custom-tooltip">
-        <p className="label">
-          <span className="ball" style={{ background: payload[0].stroke }}/>
-          {`${payload[0].name} : ${payload[0].value}`}
-        </p>
-        <p className="label">
-          <span className="ball" style={{ background: payload[1].stroke }}/>
-          {`${payload[1].name} : ${payload[1].value}`}
-        </p>
-        <p className="label">
-          <span className="ball" style={{ background: payload[2].stroke }}/>
-          {`${payload[2].name} : ${payload[2].value}`}
-        </p>
-        <p className="intro">Статус: {payload[0].payload.state}</p>
+        {tooltipText}
+        {payload ? <p className="intro">Статус: {payload[0].payload.state}</p> : null}
       </div>
     );
   }

@@ -9,29 +9,18 @@ import Tooltip from 'recharts/es6/component/Tooltip';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import Add from '@material-ui/icons/Add';
-import Remove from '@material-ui/icons/Remove';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Fab from '@material-ui/core/Fab';
+import Check from '@material-ui/icons/Check';
+
 import SelectPipeline from './components/SelectPipeline';
 
 import './styles.css';
 import CustomTooltip from './components/CustomTooltip';
-
-const data = [
-  { step: 0, middle: 4000, max: 2400, min: 2400, state: 'good' },
-  { step: 10, middle: 3000, max: 1398, min: 2210, state: 'error' },
-  { step: 20, middle: 2000, max: 9800, min: 2290, state: 'error' },
-  { step: 30, middle: 2780, max: 3908, min: 2000, state: 'warning' },
-  { step: 40, middle: 1890, max: 4800, min: 2181, state: 'good' },
-  { step: 50, middle: 2390, max: 3800, min: 2500, state: 'warning' },
-  { step: 60, middle: 2390, max: 3800, min: 2500, state: 'error' },
-  { step: 70, middle: 3490, max: 4300, min: 2100, state: 'good' },
-  { step: 80, middle: 3490, max: 4300, min: 2100, state: 'warning' },
-  { step: 90, middle: 3490, max: 4300, min: 2100, state: 'warning' },
-];
-
+import api from '../../lib/api';
 
 /**
  * Компонент-класс PipelineCondition для выполнения отображения состояния трубовпровода
@@ -55,27 +44,48 @@ export default class PipelineCondition extends React.Component {
       offset: 0,
       step: 10,
       count: 10,
-      data,
+      maxShow: true,
+      minShow: true,
+      middleShow: true,
+      loading: false,
+      pipeline: 1,
+      data: [],
     };
   }
 
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    this.setState(() => ({
+      pipeline: +id,
+      loading: true,
+    }));
+  }
+
+  componentDidUpdate() {
+    if (this.state.loading) {
+      this.loadData();
+    }
+  }
+
+  getUpdatedData = () => this.setState(() => ({ loading: true }));
 
   /**
-   * Метод увеличения графика
+   * Метод выгружает данные с сервера.
    */
-  addWidth = () => {
-    this.setState((state) => ({
-      width: state.width + state.scaleStep,
-    }));
-  };
-
-  /**
-   * Метод увеличения графика
-   */
-  subtractWidth = () => {
-    this.setState((state) => ({
-      width: state.width - state.scaleStep,
-    }));
+  loadData = () => {
+    const { limit, offset, step, pipeline } = this.state;
+    const url = `getRangeData/?limit=${limit}&offset=${offset}&delta=${step}&pipelineId=${pipeline}`;
+    api.getContent(url).then(
+      (response) => response.data,
+    ).then(
+      (d) => {
+        this.setState((state) => ({
+          data: d.data,
+          count: d.count,
+          loading: false,
+        }));
+      },
+    );
   };
 
   /**
@@ -89,6 +99,16 @@ export default class PipelineCondition extends React.Component {
       ...state,
       [name]: +value,
     }));
+  };
+
+  /**
+   * Метод записи в бд изменений о клике
+   * @param name
+   * @return {Function}
+   */
+  handleChangeChecked = (name) => (event) => {
+    const { checked } = event.target;
+    this.setState((state) => ({ ...state, [name]: checked }));
   };
 
   /**
@@ -107,8 +127,14 @@ export default class PipelineCondition extends React.Component {
     return !((offset - limit) >= 0);
   };
 
+  /**
+   * Метод для установки выбранной трубы
+   */
+  setPipeline = (pipe) => this.setState(() => ({ loading: true, pipeline: pipe.value }));
+
+
   render() {
-    const { width, scaleStep, offset, limit, step } = this.state;
+    const { width, offset, limit, step, maxShow, middleShow, minShow, data, pipeline } = this.state;
     return (
       <Paper>
         <div className="menu">
@@ -120,42 +146,47 @@ export default class PipelineCondition extends React.Component {
               <Typography variant="subtitle1">Трубовпровод:</Typography>
             </Grid>
             <Grid item xs={3} className="vert-center">
-              {/*ToDo передать функцию для вызова с сервера данных для указанного трубовпровода*/}
-              <SelectPipeline onFilter={() => console.log('lol')}/>
+              <SelectPipeline onFilter={this.setPipeline} pipe={pipeline}/>
             </Grid>
             <Grid item xs={2} className="vert-center">
-              <Typography variant="subtitle1">Управление размером:</Typography>
+              <Typography variant="subtitle1">Отображение:</Typography>
             </Grid>
-            <Grid item xs={1} className="vert-center">
-              <Fab
-                size="medium"
-                onClick={this.addWidth}
-                color="primary"
-                variant="round"
-              >
-                <Add/>
-              </Fab>
-            </Grid>
-            <Grid item xs={1} className="vert-center">
-              <Fab
-                size="medium"
-                onClick={this.subtractWidth}
-                color="secondary"
-                variant="round"
-              >
-                <Remove/>
-              </Fab>
-            </Grid>
-            <Grid item xs={3} className="vert-center">
-              <TextField
-                id="scaleStep"
-                label="Шаг"
-                value={scaleStep}
-                onChange={this.handleChange}
-                margin="normal"
-                variant="outlined"
+            <Grid item xs={2} className="vert-center">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={maxShow}
+                    onChange={this.handleChangeChecked('maxShow')}
+                    value="maxShow"
+                    color="primary"
+                  />
+                }
+                label="max"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={minShow}
+                    onChange={this.handleChangeChecked('minShow')}
+                    value="minShow"
+                    color="primary"
+                  />
+                }
+                label="min"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={middleShow}
+                    onChange={this.handleChangeChecked('middleShow')}
+                    value="middleShow"
+                    color="primary"
+                  />
+                }
+                label="middle"
               />
             </Grid>
+            <Grid item xs={2} className="vert-center"/>
             <Grid item xs={2} className="vert-center">
               <Typography variant="subtitle1">Выборка:</Typography>
             </Grid>
@@ -188,13 +219,23 @@ export default class PipelineCondition extends React.Component {
                 margin="normal"
                 variant="outlined"
               />
+              <Fab
+                variant="round"
+                onClick={this.getUpdatedData}
+                style={{
+                  marginLeft: 20,
+                  background: '#69d5c0',
+                }}
+              >
+                <Check/>
+              </Fab>
             </Grid>
             <Grid item xs={1}/>
             <Grid item xs={1} className="vert-center">
-              <Button variant="contained" color="primary" disabled={this.canStepBack()}>Назад</Button>
+              <Button variant="contained" color="primary">Назад</Button>
             </Grid>
             <Grid item xs={1} className="vert-center">
-              <Button variant="contained" color="primary" disabled={this.canStepForward()}>Вперед</Button>
+              <Button variant="contained" color="primary">Вперед</Button>
             </Grid>
           </Grid>
         </div>
@@ -208,11 +249,11 @@ export default class PipelineCondition extends React.Component {
             <XAxis dataKey="step"/>
             <YAxis/>
             <CartesianGrid strokeDasharray="3 3"/>
-            <Tooltip content={<CustomTooltip />}/>
+            <Tooltip content={<CustomTooltip/>}/>
             <Legend/>
-            <Line type="monotone" dataKey="max" stroke="#3CB371" activeDot={{ r: 6 }}/>
-            <Line type="monotone" dataKey="middle" stroke="#87CEFA" activeDot={{ r: 6 }}/>
-            <Line type="monotone" dataKey="min" stroke="#DC143C" activeDot={{ r: 6 }}/>
+            {maxShow ? <Line type="monotone" dataKey="max" stroke="#3CB371" activeDot={{ r: 6 }}/> : null}
+            {middleShow ? <Line type="monotone" dataKey="middle" stroke="#87CEFA" activeDot={{ r: 6 }}/> : null}
+            {minShow ? <Line type="monotone" dataKey="min" stroke="#DC143C" activeDot={{ r: 6 }}/> : null}
           </LineChart>
         </div>
       </Paper>

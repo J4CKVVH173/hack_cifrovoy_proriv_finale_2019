@@ -16,3 +16,18 @@ const PAGES_NAME = [
 ];
 
 export { PAGES_NAME };
+
+const STATUS_COLORS = {
+  'Требует ремонта секции': 'rgba(255,215,46,0.4)',
+  'Требует замены секции': 'rgba(255,91,90,0.4)',
+};
+
+export { STATUS_COLORS };
+
+const PIPELINES_NAMES = {
+  1: 'ФГТ1',
+  2: 'ФГТ',
+  3: 'КЕК',
+};
+
+export { PIPELINES_NAMES };
