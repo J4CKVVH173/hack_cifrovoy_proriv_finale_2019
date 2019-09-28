@@ -1,6 +1,6 @@
 import { Table } from '@devexpress/dx-react-grid-material-ui';
 import React from 'react';
-import StatusBodyCell from '../../../StatusBodyCell';
+import StatusBodyCell from '../../StatusBodyCell';
 
 /**
  * Компонент для отрисовки отдельно взятой ячейки

@@ -17,6 +17,7 @@ import Fab from '@material-ui/core/Fab';
 import Check from '@material-ui/icons/Check';
 
 import SelectPipeline from './components/SelectPipeline';
+import TableCondition from '../TableCondition';
 
 import './styles.css';
 import CustomTooltip from './components/CustomTooltip';
@@ -38,7 +39,7 @@ export default class PipelineCondition extends React.Component {
     super(props);
 
     this.state = {
-      width: window.innerWidth,
+      width: window.innerWidth - 20,
       scaleStep: 50,
       limit: 500,
       offset: 0,
@@ -224,7 +225,7 @@ export default class PipelineCondition extends React.Component {
                 onClick={this.getUpdatedData}
                 style={{
                   marginLeft: 20,
-                  background: '#69d5c0',
+                  background: 'rgb(198,198,198)',
                 }}
               >
                 <Check/>
@@ -256,6 +257,7 @@ export default class PipelineCondition extends React.Component {
             {minShow ? <Line type="monotone" dataKey="min" stroke="#DC143C" activeDot={{ r: 6 }}/> : null}
           </LineChart>
         </div>
+        <TableCondition />
       </Paper>
     );
   }

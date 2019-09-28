@@ -1,20 +1,19 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
+
+import './styles.css';
 import { Grid, TableFilterRow, TableHeaderRow, VirtualTable } from '@devexpress/dx-react-grid-material-ui';
-
 import { FilteringState, IntegratedFiltering, IntegratedSorting, SortingState } from '@devexpress/dx-react-grid';
-
-import RowComponent from './components/RowComponent';
-import BodyCell from './components/BodyCell/BodyCell';
+import Paper from '@material-ui/core/Paper';
+import BodyCell from './components/BodyCell';
 
 import settings from './tableSettings';
+
 import data from './data';
-import './styles.css';
 
 /**
- * Компонент-класс Pipelines для выполнения отображения списка труб и их состояний
+ * Компонент-класс TableCondition для выполнения отображения таблицы с информацией о трубе
  */
-export default class Pipelines extends React.Component {
+export default class TableCondition extends React.Component {
   static defaultProps = {};
 
   static propTypes = {};
@@ -28,7 +27,7 @@ export default class Pipelines extends React.Component {
 
     this.state = {
       ...settings,
-      rows: data,
+      rows: data[0],
     };
   }
 
@@ -47,7 +46,7 @@ export default class Pipelines extends React.Component {
             />
             <IntegratedSorting/>
             <IntegratedFiltering/>
-            <VirtualTable cellComponent={BodyCell} rowComponent={RowComponent}/>
+            <VirtualTable cellComponent={BodyCell}/>
             <TableFilterRow/>
             <TableHeaderRow showSortingControls/>
           </Grid>
