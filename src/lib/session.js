@@ -29,7 +29,7 @@ export function getBaseUrl() {
     // eslint-disable-next-line no-unreachable
     return 'http://test1';
   }
-  return 'http://10.178.197.211:8080';
+  return 'http://192.168.43.219:8080';
 }
 
 const baseURL = getBaseUrl();

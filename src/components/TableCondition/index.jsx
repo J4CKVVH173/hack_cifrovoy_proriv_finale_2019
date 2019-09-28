@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './styles.css';
 import { Grid, TableFilterRow, TableHeaderRow, VirtualTable } from '@devexpress/dx-react-grid-material-ui';
@@ -16,7 +17,9 @@ import data from './data';
 export default class TableCondition extends React.Component {
   static defaultProps = {};
 
-  static propTypes = {};
+  static propTypes = {
+    pipeNumber: PropTypes.number.isRequired,
+  };
 
   /**
    * Конструктор компонента с переопределением пропсов и стейтом.
@@ -27,8 +30,22 @@ export default class TableCondition extends React.Component {
 
     this.state = {
       ...settings,
-      rows: data[0],
+      rows: [],
     };
+  }
+
+  componentDidMount() {
+    this.setState({
+      rows: data[this.props.pipeNumber - 1],
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.pipeNumber !== this.props.pipeNumber) {
+      this.setState({
+        rows: data[this.props.pipeNumber - 1],
+      });
+    }
   }
 
   render() {

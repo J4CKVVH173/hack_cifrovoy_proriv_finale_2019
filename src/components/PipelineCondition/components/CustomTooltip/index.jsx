@@ -22,14 +22,16 @@ const TooltipPayload = (props) => props.payloads.map((payload) => {
  */
 const CustomTooltip = ({ active, payload }) => {
   let tooltipText = null;
+  let status = 'Не определен';
   if (payload) {
     tooltipText = <TooltipPayload payloads={payload}/>;
+    if(payload instanceof Array && payload.length > 0) status = payload[0].payload.state;
   }
   if (active) {
     return (
       <div className="custom-tooltip">
         {tooltipText}
-        {payload ? <p className="intro">Статус: {payload[0].payload.state}</p> : null}
+        {payload ? <p className="intro">Статус: {status}</p> : null}
       </div>
     );
   }

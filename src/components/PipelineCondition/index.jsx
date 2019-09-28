@@ -133,6 +133,26 @@ export default class PipelineCondition extends React.Component {
    */
   setPipeline = (pipe) => this.setState(() => ({ loading: true, pipeline: pipe.value }));
 
+  /**
+   * Метод для осуществления загрузки данных для графика на шаг вперед
+   */
+  stepForward = () => {
+    this.setState((state) => ({
+      loading: true,
+      offset: state.offset + state.limit,
+    }));
+  };
+
+  /**
+   * Метод для осуществления выгрузки данных на шаг назад
+   */
+  stepBack = () => {
+    this.setState((state) => ({
+      loading: true,
+      offset: state.offset - state.limit,
+    }));
+  };
+
 
   render() {
     const { width, offset, limit, step, maxShow, middleShow, minShow, data, pipeline } = this.state;
@@ -225,7 +245,7 @@ export default class PipelineCondition extends React.Component {
                 onClick={this.getUpdatedData}
                 style={{
                   marginLeft: 20,
-                  background: 'rgb(198,198,198)',
+                  background: 'rgb(198,198,198)#',
                 }}
               >
                 <Check/>
@@ -233,10 +253,10 @@ export default class PipelineCondition extends React.Component {
             </Grid>
             <Grid item xs={1}/>
             <Grid item xs={1} className="vert-center">
-              <Button variant="contained" color="primary">Назад</Button>
+              <Button variant="contained" color="primary" onClick={this.stepBack}>Назад</Button>
             </Grid>
             <Grid item xs={1} className="vert-center">
-              <Button variant="contained" color="primary">Вперед</Button>
+              <Button variant="contained" color="primary" onClick={this.stepForward}>Вперед</Button>
             </Grid>
           </Grid>
         </div>
@@ -257,7 +277,7 @@ export default class PipelineCondition extends React.Component {
             {minShow ? <Line type="monotone" dataKey="min" stroke="#DC143C" activeDot={{ r: 6 }}/> : null}
           </LineChart>
         </div>
-        <TableCondition />
+        <TableCondition pipeNumber={pipeline} />
       </Paper>
     );
   }

@@ -2,7 +2,8 @@ const settings = {
   columns: [
     { name: 'position', title: 'Положение' },
     { name: 'status', title: 'Состояние' },
-    { name: 'depth', title: 'Глубина повреждения' },
+    { name: 'min_thickness', title: 'Минимальая толщина' },
+    { name: 'max_thickness', title: 'Средняя толщина' },
   ],
 };
 
