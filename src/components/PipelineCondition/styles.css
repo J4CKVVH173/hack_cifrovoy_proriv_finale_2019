@@ -1,0 +1,21 @@
+.chart-wrapper {
+    width: 100%;
+    overflow: auto;
+    height: 550px;
+    animation: width 10s ease;
+}
+
+.menu {
+    padding: 20px;
+}
+
+.vert-center {
+    display: flex;
+    align-items: center;
+}
+
+.menu-wrapper {
+    border: 1px solid #bababa;
+    border-radius: 12px;
+    padding: 10px;
+}
