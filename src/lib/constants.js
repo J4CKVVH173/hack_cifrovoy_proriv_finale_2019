@@ -25,9 +25,8 @@ const STATUS_COLORS = {
 export { STATUS_COLORS };
 
 const PIPELINES_NAMES = {
-  1: 'ФГТ1',
-  2: 'ФГТ',
-  3: 'КЕК',
+  1: 'Труба 1',
+  2: 'Труба 2',
 };
 
 export { PIPELINES_NAMES };

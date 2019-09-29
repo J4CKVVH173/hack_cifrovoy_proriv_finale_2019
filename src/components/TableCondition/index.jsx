@@ -59,7 +59,7 @@ export default class TableCondition extends React.Component {
           >
             <FilteringState/>
             <SortingState
-              defaultSorting={[{ columnName: 'status', direction: 'desc' }]}
+              defaultSorting={[{ columnName: 'min_thickness', direction: 'asc' }]}
             />
             <IntegratedSorting/>
             <IntegratedFiltering/>

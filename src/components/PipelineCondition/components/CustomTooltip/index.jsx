@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload }) => {
   let status = 'Не определен';
   if (payload) {
     tooltipText = <TooltipPayload payloads={payload}/>;
-    if(payload instanceof Array && payload.length > 0) status = payload[0].payload.state;
+    if(payload instanceof Array && payload.length > 0) status = payload[0].payload.status;
   }
   if (active) {
     return (
